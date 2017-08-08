@@ -76,6 +76,7 @@ import ReaderEmailSettings from 'blocks/reader-email-settings/docs/example';
 import UploadImage from 'blocks/upload-image/docs/example';
 import ConversationCommentList from 'blocks/conversations/docs/example';
 import SimplePaymentsDialog from 'components/tinymce/plugins/simple-payments/dialog/docs/example';
+import EmbedDialog from 'components/tinymce/plugins/wpcom-view/views/embed/embed-dialog/docs/example';
 import ConversationCaterpillar from 'blocks/conversation-caterpillar/docs/example';
 
 export default React.createClass( {
@@ -165,6 +166,7 @@ export default React.createClass( {
 					<ReaderImportButton />
 					<SharingPreviewPane />
 					<SimplePaymentsDialog />
+					<EmbedDialog />
 					<ReaderShare />
 					<ReaderEmailSettings />
 					<UploadImage />
