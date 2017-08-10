@@ -1,8 +1,7 @@
 /**
  * User stub
  */
-
-var isLoggedIn = false;
+let isLoggedIn = false;
 
 export default function() {
 	return {
@@ -14,4 +13,4 @@ export default function() {
 			isLoggedIn = newIsLoggedIn;
 		}
 	};
-};
+}
