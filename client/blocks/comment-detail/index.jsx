@@ -5,7 +5,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
-import { get, isUndefined, noop } from 'lodash';
+import { get, isUndefined } from 'lodash';
 import ReactDom from 'react-dom';
 
 /**
@@ -79,6 +79,7 @@ export class CommentDetail extends Component {
 
 	state = {
 		authorIsBlocked: false,
+		isEditMode: false,
 	};
 
 	componentWillMount() {
@@ -97,15 +98,23 @@ export class CommentDetail extends Component {
 	}
 
 	deleteCommentPermanently = () => {
+		if ( this.state.isEditMode ) {
+			return;
+		}
+
 		const { commentId, deleteCommentPermanently, postId, translate } = this.props;
 		if ( isUndefined( window ) || window.confirm( translate( 'Delete this comment permanently?' ) ) ) {
 			deleteCommentPermanently( commentId, postId );
 		}
 	}
 
-	edit = () => noop;
+	edit = () => this.setState( ( { isEditMode } ) => ( { isEditMode: ! isEditMode } ) );
 
 	toggleApprove = () => {
+		if ( this.state.isEditMode ) {
+			return;
+		}
+
 		const { commentStatus, setCommentStatus } = this.props;
 		const shouldPersist = 'approved' === commentStatus || 'unapproved' === commentStatus;
 
@@ -124,12 +133,18 @@ export class CommentDetail extends Component {
 	}
 
 	toggleExpanded = () => {
-		if ( ! this.props.isLoading ) {
+		if ( ! this.props.isLoading && ! this.state.isEditMode ) {
 			this.setState( ( { isExpanded } ) => ( { isExpanded: ! isExpanded } ) );
 		}
 	}
 
-	toggleLike = () => this.props.toggleCommentLike( getCommentStatusAction( this.props ) );
+	toggleLike = () => {
+		if ( this.state.isEditMode ) {
+			return;
+		}
+
+		this.props.toggleCommentLike( getCommentStatusAction( this.props ) );
+	}
 
 	toggleSelected = () => {
 		const { commentId, toggleCommentSelected } = this.props;
@@ -137,6 +152,10 @@ export class CommentDetail extends Component {
 	}
 
 	toggleSpam = () => {
+		if ( this.state.isEditMode ) {
+			return;
+		}
+
 		const { commentStatus, setCommentStatus } = this.props;
 		setCommentStatus(
 			getCommentStatusAction( this.props ),
@@ -145,6 +164,10 @@ export class CommentDetail extends Component {
 	}
 
 	toggleTrash = () => {
+		if ( this.state.isEditMode ) {
+			return;
+		}
+
 		const { commentStatus, setCommentStatus } = this.props;
 		setCommentStatus(
 			getCommentStatusAction( this.props ),
@@ -158,7 +181,7 @@ export class CommentDetail extends Component {
 
 	keyHandler = event => {
 		const commentHasFocus = document && this.commentCard && document.activeElement === ReactDom.findDOMNode( this.commentCard );
-		if ( this.state.isExpanded && ! commentHasFocus ) {
+		if ( this.state.isEditMode || ( this.state.isExpanded && ! commentHasFocus ) ) {
 			return;
 		}
 		switch ( event.keyCode ) {
@@ -205,6 +228,7 @@ export class CommentDetail extends Component {
 
 		const {
 			authorIsBlocked,
+			isEditMode,
 			isExpanded,
 		} = this.state;
 
@@ -214,6 +238,7 @@ export class CommentDetail extends Component {
 			'is-approved': 'approved' === commentStatus,
 			'is-unapproved': 'unapproved' === commentStatus,
 			'is-bulk-edit': isBulkEdit,
+			'is-edit-mode': isEditMode,
 			'is-expanded': isExpanded,
 			'is-collapsed': ! isExpanded,
 			'is-liked': commentIsLiked,
@@ -241,7 +266,9 @@ export class CommentDetail extends Component {
 					commentIsSelected={ commentIsSelected }
 					commentStatus={ commentStatus }
 					deleteCommentPermanently={ this.deleteCommentPermanently }
+					edit={ this.edit }
 					isBulkEdit={ isBulkEdit }
+					isEditMode={ isEditMode }
 					isExpanded={ isExpanded }
 					postId={ postId }
 					postTitle={ postTitle }

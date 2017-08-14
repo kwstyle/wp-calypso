@@ -29,6 +29,7 @@ export const CommentDetailHeader = ( {
 	deleteCommentPermanently,
 	edit,
 	isBulkEdit,
+	isEditMode,
 	isExpanded,
 	postTitle,
 	toggleApprove,
@@ -45,6 +46,7 @@ export const CommentDetailHeader = ( {
 				<Button
 					borderless
 					className="comment-detail__action-collapse"
+					disabled={ isEditMode }
 					onClick={ toggleExpanded }
 				>
 					<Gridicon icon="cross" />
@@ -55,6 +57,7 @@ export const CommentDetailHeader = ( {
 					commentIsLiked={ commentIsLiked }
 					commentStatus={ commentStatus }
 					deleteCommentPermanently={ deleteCommentPermanently }
+					isEditMode={ isEditMode }
 					toggleApprove={ toggleApprove }
 					toggleLike={ toggleLike }
 					toggleSpam={ toggleSpam }
