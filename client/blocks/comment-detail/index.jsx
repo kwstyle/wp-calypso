@@ -5,7 +5,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
 import classNames from 'classnames';
-import { get, isUndefined, noop } from 'lodash';
+import { get, isUndefined } from 'lodash';
 import ReactDom from 'react-dom';
 
 /**
@@ -69,6 +69,7 @@ export class CommentDetail extends Component {
 		siteId: PropTypes.number,
 		toggleCommentLike: PropTypes.func,
 		toggleCommentSelected: PropTypes.func,
+		updateComment: PropTypes.func,
 	};
 
 	static defaultProps = {
@@ -222,6 +223,7 @@ export class CommentDetail extends Component {
 			replyComment,
 			siteId,
 			translate,
+			updateComment,
 		} = this.props;
 
 		const postUrl = `/read/blogs/${ siteId }/posts/${ postId }`;
@@ -299,7 +301,9 @@ export class CommentDetail extends Component {
 								authorUrl={ authorUrl }
 								closeEditMode={ this.edit }
 								commentContent={ commentContent }
-								updateComment={ noop }
+								commentId={ commentId }
+								postId={ postId }
+								updateComment={ updateComment }
 							/>
 						}
 
