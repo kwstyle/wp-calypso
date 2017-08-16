@@ -76,14 +76,13 @@ module.exports = {
 		},
 		defaultVariation: 'original',
 	},
-	showCartAbandonmentNotice: {
-		datestamp: '20170630',
+	jetpackConnectPlansCopyChanges: {
+		datestamp: '20170728',
 		variations: {
-			doNotShowNotice: 50,
-			showNotice: 50,
+			original: 50,
+			modified: 50,
 		},
-		defaultVariation: 'doNotShowNotice',
-		allowExistingUsers: true,
+		defaultVariation: 'original',
 	},
 	postPublishConfirmation: {
 		datestamp: '20170801',
@@ -113,5 +112,14 @@ module.exports = {
 		defaultVariation: 'hide',
 		allowExistingUsers: true,
 		localeTargets: 'any',
+	},
+	postSignupUpgradeScreen: {
+		datestamp: '20170810',
+		variations: {
+			original: 50,
+			modified: 50,
+		},
+		defaultVariation: 'original',
+		allowExistingUsers: true,
 	},
 };

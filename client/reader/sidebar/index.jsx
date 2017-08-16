@@ -1,3 +1,4 @@
+/** @format */
 /**
  * External dependencies
  */
@@ -162,10 +163,7 @@ export const ReaderSidebar = createReactClass( {
 									'sidebar-streams__following': true,
 								} ) }
 							>
-								<a
-									href="/"
-									onClick={ this.handleReaderSidebarFollowedSitesClicked }
-								>
+								<a href="/" onClick={ this.handleReaderSidebarFollowedSitesClicked }>
 									<Gridicon icon="checkmark-circle" size={ 24 } />
 									<span className="menu-link-text">
 										{ this.props.translate( 'Followed Sites' ) }
@@ -186,14 +184,14 @@ export const ReaderSidebar = createReactClass( {
 										this.props.path,
 										{
 											'sidebar-streams__conversations': true,
-										},
+										}
 									) }
 								>
 									<a
 										href="/read/conversations"
 										onClick={ this.handleReaderSidebarConversationsClicked }
 									>
-										<Gridicon icon="comment" size={ 24 } />
+										<Gridicon icon="chat" size={ 24 } />
 										<span className="menu-link-text">
 											{ this.props.translate( 'Conversations' ) }
 										</span>
@@ -201,14 +199,14 @@ export const ReaderSidebar = createReactClass( {
 								</li> }
 							<ReaderSidebarTeams teams={ this.props.teams } path={ this.props.path } />
 							{ config.isEnabled( 'reader/conversations' ) &&
-									isAutomatticTeamMember( this.props.teams ) &&
+								isAutomatticTeamMember( this.props.teams ) &&
 								<li
 									className={ ReaderSidebarHelper.itemLinkClass(
 										'/read/conversations/a8c',
 										this.props.path,
 										{
 											'sidebar-streams__conversations': true,
-										},
+										}
 									) }
 								>
 									<a
@@ -216,18 +214,16 @@ export const ReaderSidebar = createReactClass( {
 										onClick={ this.handleReaderSidebarA8cConversationsClicked }
 									>
 										<svg
-											className={ 'gridicon gridicon-automattic' }
+											className={ 'gridicon gridicon-automattic-conversations' }
 											width="24"
 											height="24"
 											xmlns="http://www.w3.org/2000/svg"
-											viewBox="0 0 16 16"
+											viewBox="0 0 24 24"
 										>
-											<path d="M7.99 1.57C3.75 1.57 1 4.57 1 7.8v0.4c0 3.18 2.75 6.24 6.99 6.24 4.26 0 7.01-3.05 7.01-6.24V7.8C15 4.57 12.25 1.57 7.99 1.57zM12.74 8.13c0 2.32-1.69 4.42-4.74 4.42 -3.05 0-4.73-2.1-4.73-4.42V7.84c0-2.32 1.67-4.38 4.73-4.38 3.06 0 4.75 2.07 4.75 4.39V8.13z" />
-											<path d="M9.47 5.73C9.07 5.47 8.52 5.59 8.26 6L6.21 9.17c-0.26 0.41-0.15 0.95 0.26 1.21 0.4 0.26 0.95 0.14 1.21-0.26l2.05-3.17C9.99 6.53 9.88 5.99 9.47 5.73z" />
+											<path d="M12.2 8c.5.3.6 1 .3 1.4L10 13.3c-.3.5-1 .7-1.4.3-.6-.3-.8-1-.4-1.5l2.5-3.9c.4-.4 1-.5 1.5-.2zM12.7 13h7c1 0 1.8.8 1.8 1.8v4.3c0 1.1-.5 2.2-1.5 2.9l-2.9 2v-3.1h-4.4c-1 0-1.8-.8-1.8-1.8v-4.4c.1-.9.9-1.7 1.8-1.7z" />
+											<path d="M16.3 11.3c0 .2 0 .5-.1.7H19v-1c0-4-3.4-7.6-8.5-7.6S2 7.1 2 11v.4c0 3.8 3.1 7.4 8 7.6v-2.3c-3.4-.2-5.2-2.7-5.2-5.4V11c0-2.8 2-5.3 5.8-5.3s5.8 2.5 5.8 5.3v.3z" />
 										</svg>
-										<span className="menu-link-text">
-											A8C Conversations
-										</span>
+										<span className="menu-link-text">A8C Conversations</span>
 									</a>
 								</li> }
 
@@ -237,10 +233,7 @@ export const ReaderSidebar = createReactClass( {
 											'sidebar-streams__discover': true,
 										} ) }
 									>
-										<a
-											href="/discover"
-											onClick={ this.handleReaderSidebarDiscoverClicked }
-										>
+										<a href="/discover" onClick={ this.handleReaderSidebarDiscoverClicked }>
 											<Gridicon icon="my-sites" />
 											<span className="menu-link-text">
 												{ this.props.translate( 'Discover' ) }
@@ -255,10 +248,7 @@ export const ReaderSidebar = createReactClass( {
 										'sidebar-streams__search': true,
 									} ) }
 								>
-									<a
-										href="/read/search"
-										onClick={ this.handleReaderSidebarSearchClicked }
-									>
+									<a href="/read/search" onClick={ this.handleReaderSidebarSearchClicked }>
 										<Gridicon icon="search" size={ 24 } />
 										<span className="menu-link-text">
 											{ this.props.translate( 'Search' ) }
@@ -270,13 +260,10 @@ export const ReaderSidebar = createReactClass( {
 								className={ ReaderSidebarHelper.itemLinkClass(
 									'/activities/likes',
 									this.props.path,
-									{ 'sidebar-activity__likes': true },
+									{ 'sidebar-activity__likes': true }
 								) }
 							>
-								<a
-									href="/activities/likes"
-									onClick={ this.handleReaderSidebarLikeActivityClicked }
-								>
+								<a href="/activities/likes" onClick={ this.handleReaderSidebarLikeActivityClicked }>
 									<Gridicon icon="star" size={ 24 } />
 									<span className="menu-link-text">
 										{ this.props.translate( 'My Likes' ) }
@@ -369,7 +356,7 @@ export default connect(
 				toggleTagsVisibility: toggleReaderSidebarTags,
 				setNextLayoutFocus,
 			},
-			dispatch,
+			dispatch
 		);
-	},
+	}
 )( localize( ReaderSidebar ) );

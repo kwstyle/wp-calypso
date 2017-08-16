@@ -1,3 +1,4 @@
+/** @format */
 /**
  * External dependencies
  */
@@ -34,6 +35,7 @@ export class ConversationCommentList extends React.Component {
 					{ map( commentIds, commentId => {
 						return (
 							<PostComment
+								showNestingReplyArrow
 								commentsTree={ commentsTree }
 								key={ commentId }
 								commentId={ commentId }

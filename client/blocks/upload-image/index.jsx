@@ -20,6 +20,7 @@ import {
 } from './constants';
 import { AspectRatios } from 'state/ui/editor/image-editor/constants';
 import { getSelectedSiteId } from 'state/ui/selectors';
+import { getMediaItem } from 'state/selectors';
 import Dialog from 'components/dialog';
 import FilePicker from 'components/file-picker';
 import { resetAllImageEditorState } from 'state/ui/editor/image-editor/actions';
@@ -59,9 +60,11 @@ class UploadImage extends Component {
 		doneButtonText: PropTypes.string,
 		addAnImageText: PropTypes.string,
 		dragUploadText: PropTypes.string,
+		defaultImage: PropTypes.any,
 		onError: PropTypes.func,
 		onImageEditorDone: PropTypes.func,
-		onUploadImageDone: PropTypes.func,
+		onImageUploadDone: PropTypes.func,
+		onImageRemove: PropTypes.func,
 	};
 
 	static defaultProps = {
@@ -70,6 +73,8 @@ class UploadImage extends Component {
 		},
 		backgroundContent: null,
 		onImageEditorDone: noop,
+		onImageUploadDone: noop,
+		onImageRemove: noop,
 		onError: noop,
 		isUploading: false,
 	};
@@ -120,7 +125,7 @@ class UploadImage extends Component {
 
 	onImageEditorDone = ( error, imageBlob, imageEditorProps ) => {
 		if ( error ) {
-			this.handleError( ERROR_IMAGE_EDITOR_DONE, error );
+			return this.handleError( ERROR_IMAGE_EDITOR_DONE, error );
 		}
 
 		this.setState( {
@@ -166,7 +171,7 @@ class UploadImage extends Component {
 
 	// Handle the uploading process.
 	handleMediaStoreChange = () => {
-		const { siteId, onUploadImageDone } = this.props;
+		const { siteId, onImageUploadDone } = this.props;
 
 		const { errors } = this.state;
 
@@ -189,7 +194,7 @@ class UploadImage extends Component {
 
 			MediaStore.off( 'change', this.handleMediaStoreChange );
 
-			onUploadImageDone( uploadedImage );
+			onImageUploadDone( uploadedImage );
 
 			return;
 		}
@@ -216,6 +221,7 @@ class UploadImage extends Component {
 	};
 
 	renderImageEditor() {
+		const { defaultImage } = this.props;
 		const { isEditingImage, selectedImage, selectedImageName } = this.state;
 
 		if ( ! isEditingImage ) {
@@ -226,14 +232,20 @@ class UploadImage extends Component {
 
 		const classes = classnames( 'upload-image-modal', additionalImageEditorClasses );
 
+		const isEditingDefaultImage = defaultImage && selectedImage === defaultImage.URL;
+
+		const media = isEditingDefaultImage
+			? defaultImage
+			: {
+				src: selectedImage,
+				file: selectedImageName,
+			};
+
 		return (
 			<Dialog additionalClassNames={ classes } isVisible={ true }>
 				<ImageEditor
 					{ ...imageEditorProps }
-					media={ {
-						src: selectedImage,
-						file: selectedImageName,
-					} }
+					media={ media }
 					onDone={ this.onImageEditorDone }
 					onCancel={ this.hideImageEditor }
 					doneButtonText={ doneButtonText ? doneButtonText : 'Done' }
@@ -243,14 +255,48 @@ class UploadImage extends Component {
 	}
 
 	removeUploadedImage = () => {
-		this.setState( { uploadedImage: null } );
+		const { onImageRemove } = this.props;
+		const { uploadedImage } = this.state;
+
+		this.revokeImageObjects();
+
+		this.setState( {
+			selectedImage: null,
+			selectedImageName: '',
+			editedImage: null,
+			uploadedImage: null,
+		} );
+
+		onImageRemove( uploadedImage );
+	};
+
+	componentWillMount() {
+		// use defaultImage as uploadedImage if set.
+		const { defaultImage } = this.props;
+		if ( defaultImage ) {
+			this.setState( {
+				uploadedImage: defaultImage,
+				selectedImage: defaultImage.URL,
+				selectedImageName: path.basename( defaultImage.URL ),
+				editedImage: defaultImage.URL,
+			} );
+		}
+	}
+
+	revokeImageObjects = () => {
+		const { selectedImage, editedImage } = this.state;
+
+		if ( selectedImage ) {
+			URL.revokeObjectURL( selectedImage );
+		}
+
+		if ( editedImage ) {
+			URL.revokeObjectURL( editedImage );
+		}
 	};
 
 	componentWillUnmount() {
-		const { selectedImage, editedImage } = this.state;
-
-		URL.revokeObjectURL( selectedImage );
-		URL.revokeObjectURL( editedImage );
+		this.revokeImageObjects();
 
 		MediaStore.off( 'change', this.handleMediaStoreChange );
 		MediaValidationStore.off( 'change', this.storeValidationErrors );
@@ -377,14 +423,19 @@ class UploadImage extends Component {
 
 export default connect(
 	( state, ownProps ) => {
-		let { siteId } = ownProps;
+		let { siteId, defaultImage } = ownProps;
 
 		if ( ! siteId ) {
 			siteId = getSelectedSiteId( state );
 		}
 
+		if ( ! defaultImage || typeof defaultImage !== 'object' ) {
+			defaultImage = getMediaItem( state, siteId, defaultImage );
+		}
+
 		return {
 			siteId,
+			defaultImage,
 		};
 	},
 	{

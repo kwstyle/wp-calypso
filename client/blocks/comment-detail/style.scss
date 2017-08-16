@@ -53,6 +53,7 @@
 
 	strong {
 		color: $gray-text;
+		float: left;
 		margin-right: 8px;
 	}
 
@@ -332,7 +333,6 @@
 	display: flex;
 	flex-flow: row nowrap;
 	padding: 0 16px;
-	transition: padding-bottom .3s linear;
 
 	.gravatar {
 		height: 32px;

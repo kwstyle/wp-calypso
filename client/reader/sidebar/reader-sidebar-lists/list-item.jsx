@@ -1,9 +1,10 @@
+/** @format */
 /**
  * External Dependencies
  */
 import React, { Component } from 'react';
 import ReactDom from 'react-dom';
-import last from 'lodash/last';
+import { last } from 'lodash';
 import classNames from 'classnames';
 import { localize } from 'i18n-calypso';
 

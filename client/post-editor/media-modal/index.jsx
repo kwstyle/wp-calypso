@@ -51,9 +51,8 @@ function areMediaActionsDisabled( modalView, mediaItems ) {
 		MediaUtils.isItemBeingUploaded( item ) && (
 			// Transients can't be handled by the editor if they are being
 			// uploaded via an external URL
-			! MediaUtils.isTransientPreviewable( item ) ||
-			MediaUtils.getMimePrefix( item ) !== 'image' ||
-			ModalViews.GALLERY === modalView
+			( ! MediaUtils.isTransientPreviewable( item ) ||
+			MediaUtils.getMimePrefix( item ) !== 'image' || ModalViews.GALLERY === modalView )
 		)
 	);
 }
@@ -195,21 +194,26 @@ export class EditorMediaModal extends Component {
 	};
 
 	deleteMedia = () => {
+		const { view, mediaLibrarySelectedItems, translate } = this.props;
 		let selectedCount;
 
-		if ( ModalViews.DETAIL === this.props.view ) {
+		if ( ModalViews.DETAIL === view ) {
 			selectedCount = 1;
 		} else {
-			selectedCount = this.props.mediaLibrarySelectedItems.length;
+			selectedCount = mediaLibrarySelectedItems.length;
 		}
 
-		const confirmMessage = this.props.translate(
-			'Are you sure you want to permanently delete this item?',
-			'Are you sure you want to permanently delete these items?',
+		const confirmMessage = translate(
+			'Are you sure you want to delete this item? ' +
+			'It will be permanently removed from all other locations where it currently appears.',
+			'Are you sure you want to delete these items? ' +
+			'They will be permanently removed from all other locations where they currently appear.',
 			{ count: selectedCount }
 		);
 
-		accept( confirmMessage, this.confirmDeleteMedia );
+		accept( confirmMessage, this.confirmDeleteMedia, translate( 'Delete' ), null, {
+			isScary: true
+		} );
 	};
 
 	onAddMedia = () => {

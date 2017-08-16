@@ -42,11 +42,11 @@ const getCommentStatusAction = ( { commentId, commentIsLiked, commentStatus, pos
 export class CommentDetail extends Component {
 	static propTypes = {
 		authorAvatarUrl: PropTypes.string,
-		authorDisplayName: PropTypes.string,
 		authorEmail: PropTypes.oneOfType( [ PropTypes.bool, PropTypes.string ] ),
 		authorId: PropTypes.number,
 		authorIp: PropTypes.string,
 		authorIsBlocked: PropTypes.bool,
+		authorName: PropTypes.string,
 		authorUrl: PropTypes.string,
 		authorUsername: PropTypes.string,
 		commentContent: PropTypes.string,
@@ -129,16 +129,7 @@ export class CommentDetail extends Component {
 		}
 	}
 
-	toggleLike = () => {
-		const { commentIsLiked, commentStatus, toggleCommentLike } = this.props;
-		const shouldPersist = 'unapproved' === commentStatus && ! commentIsLiked;
-
-		toggleCommentLike( getCommentStatusAction( this.props ) );
-
-		if ( shouldPersist ) {
-			this.setState( { isExpanded: false } );
-		}
-	}
+	toggleLike = () => this.props.toggleCommentLike( getCommentStatusAction( this.props ) );
 
 	toggleSelected = () => {
 		const { commentId, toggleCommentSelected } = this.props;
@@ -182,9 +173,9 @@ export class CommentDetail extends Component {
 	render() {
 		const {
 			authorAvatarUrl,
-			authorDisplayName,
 			authorEmail,
 			authorIp,
+			authorName,
 			authorUrl,
 			authorUsername,
 			commentContent,
@@ -199,7 +190,6 @@ export class CommentDetail extends Component {
 			parentCommentAuthorAvatarUrl,
 			parentCommentAuthorDisplayName,
 			parentCommentContent,
-			parentCommentUrl,
 			postAuthorDisplayName,
 			postId,
 			postTitle,
@@ -207,9 +197,11 @@ export class CommentDetail extends Component {
 			repliedToComment,
 			replyComment,
 			siteId,
+			translate,
 		} = this.props;
 
 		const postUrl = `/read/blogs/${ siteId }/posts/${ postId }`;
+		const authorDisplayName = authorName || translate( 'Anonymous' );
 
 		const {
 			authorIsBlocked,
@@ -263,10 +255,10 @@ export class CommentDetail extends Component {
 				{ isExpanded &&
 					<div className="comment-detail__content">
 						<CommentDetailPost
+							commentId={ commentId }
 							parentCommentAuthorAvatarUrl={ parentCommentAuthorAvatarUrl }
 							parentCommentAuthorDisplayName={ parentCommentAuthorDisplayName }
 							parentCommentContent={ parentCommentContent }
-							parentCommentUrl={ parentCommentUrl }
 							postAuthorDisplayName={ postAuthorDisplayName }
 							postTitle={ postTitle }
 							postUrl={ postUrl }
@@ -321,11 +313,11 @@ const mapStateToProps = ( state, ownProps ) => {
 
 	return ( {
 		authorAvatarUrl: get( comment, 'author.avatar_URL' ),
-		authorDisplayName: get( comment, 'author.name' ),
 		authorEmail: get( comment, 'author.email' ),
 		authorId: get( comment, 'author.ID' ),
 		authorIp: get( comment, 'author.ip' ), // TODO: not available in the current data structure
 		authorIsBlocked: get( comment, 'author.isBlocked' ), // TODO: not available in the current data structure
+		authorName: get( comment, 'author.name' ),
 		authorUrl: get( comment, 'author.URL', '' ),
 		authorUsername: get( comment, 'author.nice_name' ),
 		commentContent: get( comment, 'content' ),
@@ -338,7 +330,6 @@ const mapStateToProps = ( state, ownProps ) => {
 		parentCommentAuthorAvatarUrl: get( parentComment, 'author.avatar_URL' ),
 		parentCommentAuthorDisplayName: get( parentComment, 'author.name' ),
 		parentCommentContent,
-		parentCommentUrl: get( parentComment, 'URL', '' ),
 		postAuthorDisplayName: get( comment, 'post.author.name' ), // TODO: not available in the current data structure
 		postId,
 		postTitle,

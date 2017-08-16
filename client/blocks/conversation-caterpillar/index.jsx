@@ -1,9 +1,10 @@
+/** @format */
 /**
  * External dependencies
  */
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { map, get, last } from 'lodash';
+import { map, get, last, uniqBy, size, filter, takeRight } from 'lodash';
 import { localize } from 'i18n-calypso';
 
 /***
@@ -11,6 +12,9 @@ import { localize } from 'i18n-calypso';
  */
 import Gravatar from 'components/gravatar';
 import { getDateSortedPostComments } from 'state/comments/selectors';
+import Card from 'components/card';
+
+const MAX_GRAVATARS_TO_DISPLAY = 10;
 
 class ConversationCaterpillarComponent extends React.Component {
 	static propTypes = {
@@ -21,37 +25,57 @@ class ConversationCaterpillarComponent extends React.Component {
 
 	render() {
 		const { comments, translate } = this.props;
-		const lastComment = last( comments );
-		const lastCommenterName = get( lastComment, 'author.name' );
-		const commentCount = comments.length;
+		const commentCount = size( comments );
+
+		// Only display authors with a gravatar, and only display each author once
+		const uniqueAuthors = uniqBy( map( comments, 'author' ), 'ID' );
+		const displayedAuthors = takeRight(
+			filter( uniqueAuthors, 'has_avatar' ),
+			MAX_GRAVATARS_TO_DISPLAY
+		);
+		const displayedAuthorsCount = size( displayedAuthors );
+		const lastAuthorName = get( last( displayedAuthors ), 'name' );
+		const gravatarSmallScreenThreshold = MAX_GRAVATARS_TO_DISPLAY / 2;
 
 		// At the moment, we just show authors for the entire comments array
 		return (
-			<div className="conversation-caterpillar">
-				{ map( comments, comment => {
-					return (
-						<Gravatar
-							className="conversation-caterpillar__gravatar"
-							key={ comment.ID }
-							user={ comment.author }
-							size={ 32 }
-							aria-hidden="true"
-						/>
-					);
-				} ) }
+			<Card className="conversation-caterpillar">
+				<div className="conversation-caterpillar__gravatars">
+					{ map( displayedAuthors, ( author, index ) => {
+						let gravClasses = 'conversation-caterpillar__gravatar';
+						// If we have more than 5 gravs,
+						// add a additional class so we can hide some on small screens
+						if (
+							displayedAuthorsCount > gravatarSmallScreenThreshold &&
+							index < displayedAuthorsCount - gravatarSmallScreenThreshold
+						) {
+							gravClasses += ' is-hidden-on-small-screens';
+						}
+
+						return (
+							<Gravatar
+								className={ gravClasses }
+								key={ author.ID }
+								user={ author }
+								size={ 32 }
+								aria-hidden="true"
+							/>
+						);
+					} ) }
+				</div>
 				<button
 					className="conversation-caterpillar__count"
 					title={
 						commentCount > 1
 							? translate( 'View comments from %(commenterName)s and %(count)d more', {
 									args: {
-										commenterName: lastCommenterName,
+										commenterName: lastAuthorName,
 										count: commentCount - 1,
 									},
 								} )
 							: translate( 'View comment from %(commenterName)s', {
 									args: {
-										commenterName: lastCommenterName,
+										commenterName: lastAuthorName,
 									},
 								} )
 					}
@@ -59,17 +83,17 @@ class ConversationCaterpillarComponent extends React.Component {
 					{ commentCount > 1
 						? translate( '%(commenterName)s and %(count)d more', {
 								args: {
-									commenterName: lastCommenterName,
+									commenterName: lastAuthorName,
 									count: commentCount - 1,
 								},
 							} )
 						: translate( '%(commenterName)s commented', {
 								args: {
-									commenterName: lastCommenterName,
+									commenterName: lastAuthorName,
 								},
 							} ) }
 				</button>
-			</div>
+			</Card>
 		);
 	}
 }
