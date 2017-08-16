@@ -11,6 +11,7 @@ import { localize } from 'i18n-calypso';
  */
 import { getEditorPath } from 'state/ui/editor/selectors';
 import { getNormalizedPost } from 'state/posts/selectors';
+import { isSharePanelOpen } from 'state/ui/post-type-list/selectors';
 import Card from 'components/card';
 import PostRelativeTime from 'blocks/post-relative-time';
 import PostStatus from 'blocks/post-status';
@@ -20,15 +21,6 @@ import PostActionsEllipsisMenu from 'my-sites/post-type-list/post-actions-ellips
 import PostTypePostAuthor from 'my-sites/post-type-list/post-type-post-author';
 
 class PostItem extends React.Component {
-
-	constructor( props ) {
-		super( props );
-		this.state = { showShare: false };
-	}
-
-	toggleShare = () => {
-		this.setState( { showShare: ! this.state.showShare } );
-	}
 
 	render() {
 		const title = this.props.post ? this.props.post.title : null;
@@ -55,10 +47,10 @@ class PostItem extends React.Component {
 					</div>
 				</div>
 				<PostTypeListPostThumbnail globalId={ this.props.globalId } />
-				<PostActionsEllipsisMenu globalId={ this.props.globalId } onToggleShare={ this.toggleShare } />
+				<PostActionsEllipsisMenu globalId={ this.props.globalId } />
 				{
 					this.props.post &&
-					this.state.showShare &&
+					this.props.isSharePanelOpen &&
 					<PostShare
 						post={ this.props.post }
 						siteId={ this.props.post.site_ID }
@@ -77,14 +69,15 @@ PostItem.propTypes = {
 	compact: PropTypes.bool
 };
 
-export default connect( ( state, ownProps ) => {
-	const post = getNormalizedPost( state, ownProps.globalId );
+export default connect( ( state, { globalId } ) => {
+	const post = getNormalizedPost( state, globalId );
 	if ( ! post ) {
 		return {};
 	}
 
 	return {
 		post,
-		editUrl: getEditorPath( state, post.site_ID, post.ID )
+		editUrl: getEditorPath( state, post.site_ID, post.ID ),
+		isSharePanelOpen: isSharePanelOpen( state, globalId ),
 	};
 } )( localize( PostItem ) );

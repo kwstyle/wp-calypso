@@ -16,7 +16,7 @@ import PostActionsEllipsisMenuTrash from './trash';
 import PostActionsEllipsisMenuView from './view';
 import PostActionsEllipsisMenuRestore from './restore';
 
-export default function PostActionsEllipsisMenu( { globalId, includeDefaultActions, children, onToggleShare } ) {
+export default function PostActionsEllipsisMenu( { globalId, includeDefaultActions, children } ) {
 	let actions = [];
 
 	if ( includeDefaultActions ) {
@@ -25,7 +25,7 @@ export default function PostActionsEllipsisMenu( { globalId, includeDefaultActio
 			<PostActionsEllipsisMenuView key="view" />,
 			<PostActionsEllipsisMenuStats key="stats" />,
 			<PostActionsEllipsisMenuPublish key="publish" />,
-			<PostActionsEllipsisMenuShare key="share" onToggleShare={ onToggleShare } />,
+			<PostActionsEllipsisMenuShare key="share" />,
 			<PostActionsEllipsisMenuRestore key="restore" />,
 			<PostActionsEllipsisMenuTrash key="trash" />
 		);

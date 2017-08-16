@@ -13,6 +13,7 @@ import { includes } from 'lodash';
 import PopoverMenuItem from 'components/popover/menu-item';
 import { mc } from 'lib/analytics';
 import { getPost } from 'state/posts/selectors';
+import { toggleSharePanel } from 'state/ui/post-type-list/actions';
 import config from 'config';
 
 class PostActionsEllipsisMenuShare extends Component {
@@ -20,7 +21,6 @@ class PostActionsEllipsisMenuShare extends Component {
 		globalId: PropTypes.string,
 		translate: PropTypes.func.isRequired,
 		status: PropTypes.string,
-		onToggleShare: PropTypes.func.isRequired,
 	};
 
 	constructor() {
@@ -31,7 +31,7 @@ class PostActionsEllipsisMenuShare extends Component {
 
 	sharePost() {
 		mc.bumpStat( 'calypso_cpt_actions', 'share' );
-		this.props.onToggleShare();
+		this.props.toggleSharePanel( this.props.globalId );
 	}
 
 	render() {
@@ -49,8 +49,8 @@ class PostActionsEllipsisMenuShare extends Component {
 }
 
 export default connect(
-	( state, ownProps ) => {
-		const post = getPost( state, ownProps.globalId );
+	( state, { globalId } ) => {
+		const post = getPost( state, globalId );
 		if ( ! post ) {
 			return {};
 		}
@@ -58,5 +58,7 @@ export default connect(
 		return {
 			status: post.status,
 		};
+	}, {
+		toggleSharePanel,
 	}
 )( localize( PostActionsEllipsisMenuShare ) );
