@@ -230,7 +230,7 @@ const editComment = ( { dispatch, getState }, action ) => {
 const announceEditFailure = ( { dispatch, getState }, action ) => {
 	dispatch(
 		local( {
-			...action,
+			...omit( action, [ 'originalCommentData' ] ),
 			commentData: action.originalCommentData,
 		} )
 	);
