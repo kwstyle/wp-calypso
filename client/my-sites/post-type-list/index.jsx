@@ -27,7 +27,7 @@ import PostTypeListEmptyContent from './empty-content';
  * Constants
  */
 const DEFAULT_POST_ROW_HEIGHT = 86;
-const SHARE_POST_ROW_HEIGHT = 300;
+const SHARE_POST_ROW_HEIGHT = 469;
 const DEFAULT_POSTS_PER_PAGE = 20;
 const LOAD_OFFSET = 10;
 

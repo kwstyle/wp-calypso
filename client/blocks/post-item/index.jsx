@@ -31,23 +31,25 @@ class PostItem extends React.Component {
 		} );
 
 		return (
-			<Card compact className={ classes }>
-				<div className="post-item__detail">
-					<div className="post-item__title-meta">
-						<h1 className="post-item__title">
-							<a href={ this.props.editUrl } className="post-item__title-link">
-								{ title || this.props.translate( 'Untitled' ) }
-							</a>
-						</h1>
-						<div className="post-item__meta">
-							<PostRelativeTime globalId={ this.props.globalId } />
-							<PostStatus globalId={ this.props.globalId } />
-							<PostTypePostAuthor globalId={ this.props.globalId } />
+			<div>
+				<Card compact className={ classes }>
+					<div className="post-item__detail">
+						<div className="post-item__title-meta">
+							<h1 className="post-item__title">
+								<a href={ this.props.editUrl } className="post-item__title-link">
+									{ title || this.props.translate( 'Untitled' ) }
+								</a>
+							</h1>
+							<div className="post-item__meta">
+								<PostRelativeTime globalId={ this.props.globalId } />
+								<PostStatus globalId={ this.props.globalId } />
+								<PostTypePostAuthor globalId={ this.props.globalId } />
+							</div>
 						</div>
 					</div>
-				</div>
-				<PostTypeListPostThumbnail globalId={ this.props.globalId } />
-				<PostActionsEllipsisMenu globalId={ this.props.globalId } />
+					<PostTypeListPostThumbnail globalId={ this.props.globalId } />
+					<PostActionsEllipsisMenu globalId={ this.props.globalId } />
+				</Card>
 				{
 					this.props.post &&
 					this.props.isSharePanelOpen &&
@@ -56,7 +58,7 @@ class PostItem extends React.Component {
 						siteId={ this.props.post.site_ID }
 					/>
 				}
-			</Card>
+			</div>
 		);
 	}
 }
