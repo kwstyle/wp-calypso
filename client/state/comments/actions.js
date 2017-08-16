@@ -179,6 +179,7 @@ export function editComment( siteId, postId, commentId, content ) {
 			type: COMMENTS_EDIT,
 			siteId,
 			postId,
+			commentId,
 			content,
 		} );
 
