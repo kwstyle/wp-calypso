@@ -15,6 +15,11 @@ import ExternalLink from 'components/external-link';
 import SectionHeader from 'components/section-header';
 
 class Intro extends Component {
+	static propTypes = {
+		goToStep: PropTypes.func.isRequired,
+		translate: PropTypes.func.isRequired,
+	};
+
 	skipSetup = () => this.props.goToStep( Steps.CONFIRMATION );
 
 	render() {
@@ -64,10 +69,5 @@ class Intro extends Component {
 		);
 	}
 }
-
-Intro.propTypes = {
-	goToStep: PropTypes.func.isRequired,
-	translate: PropTypes.func.isRequired,
-};
 
 export default localize( Intro );
