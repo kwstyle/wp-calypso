@@ -113,6 +113,10 @@ export const trackRequests = requests => next => ( store, action ) => {
 /** @type Map stores meta data about data request **/
 const requestsMeta = new Map();
 
+if ( 'development' === process.env.NODE_ENV && typeof window === 'object' ) {
+	window.dataRequests = requestsMeta;
+}
+
 /**
  * Builds a function to return request meta (used for testing)
  *
