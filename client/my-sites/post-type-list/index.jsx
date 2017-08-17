@@ -4,7 +4,7 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
-import { difference, includes, isEqual, range, size } from 'lodash';
+import { difference, get, includes, isEqual, range, size } from 'lodash';
 import AutoSizer from 'react-virtualized/AutoSizer';
 import WindowScroller from 'react-virtualized/WindowScroller';
 import List from 'react-virtualized/List';
@@ -27,23 +27,9 @@ import PostTypeListEmptyContent from './empty-content';
  * Constants
  */
 const DEFAULT_POST_ROW_HEIGHT = 86;
-const SHARE_POST_ROW_HEIGHT = 469;
+const DEFAULT_SHARE_POST_ROW_HEIGHT = 300;
 const DEFAULT_POSTS_PER_PAGE = 20;
 const LOAD_OFFSET = 10;
-
-const getPostRowHeight = ( { posts, openShares } ) => ( { index } ) => {
-	if ( ! posts || ! posts[ index ] || ! posts[ index ].global_ID ) {
-		return DEFAULT_POST_ROW_HEIGHT;
-	}
-
-	const globalId = posts[ index ].global_ID;
-
-	if ( openShares && openShares.indexOf( globalId ) > -1 ) {
-		return SHARE_POST_ROW_HEIGHT;
-	}
-
-	return DEFAULT_POST_ROW_HEIGHT;
-};
 
 class PostTypeList extends Component {
 	static propTypes = {
@@ -62,6 +48,10 @@ class PostTypeList extends Component {
 		this.renderPlaceholder = this.renderPlaceholder.bind( this );
 		this.setRequestedPages = this.setRequestedPages.bind( this );
 		this.setListRef = this.setListRef.bind( this );
+		this.handleHeightChange = this.handleHeightChange.bind( this );
+		this.getPostRowHeight = this.getPostRowHeight.bind( this );
+
+		this.rowHeights = {};
 
 		this.state = {
 			requestedPages: this.getInitialRequestedPages( this.props )
@@ -73,12 +63,6 @@ class PostTypeList extends Component {
 			this.setState( {
 				requestedPages: this.getInitialRequestedPages( nextProps )
 			} );
-		}
-
-		if ( this.listRef && ! isEqual( this.props.openShares, nextProps.openShares ) ) {
-			setTimeout( () => {
-				this.listRef.recomputeRowHeights( 0 );
-			}, 1 );
 		}
 	}
 
@@ -134,7 +118,7 @@ class PostTypeList extends Component {
 
 	renderPostRow( { index } ) {
 		const { global_ID: globalId } = this.props.posts[ index ];
-		return <PostItem key={ globalId } globalId={ globalId } />;
+		return <PostItem key={ globalId } globalId={ globalId } onHeightChange={ this.handleHeightChange } />;
 	}
 
 	cellRendererWrapper( { key, style, ...rest } ) {
@@ -147,6 +131,30 @@ class PostTypeList extends Component {
 
 	setListRef( list ) {
 		this.listRef = list;
+	}
+
+	handleHeightChange( { globalId, nodeHeight } ) {
+		this.rowHeights[ globalId ] = nodeHeight;
+
+		setTimeout( () => {
+			this.listRef.recomputeRowHeights( 0 );
+		}, 1 );
+	}
+
+	getPostRowHeight( { index } ) {
+		const { posts, openShares } = this.props;
+
+		if ( ! posts || ! posts[ index ] || ! posts[ index ].global_ID ) {
+			return DEFAULT_POST_ROW_HEIGHT;
+		}
+
+		const globalId = posts[ index ].global_ID;
+
+		if ( openShares && openShares.indexOf( globalId ) > -1 ) {
+			return get( this.rowHeights, globalId ) || DEFAULT_SHARE_POST_ROW_HEIGHT;
+		}
+
+		return DEFAULT_POST_ROW_HEIGHT;
 	}
 
 	render() {
@@ -182,10 +190,7 @@ class PostTypeList extends Component {
 										onRowsRendered={ this.setRequestedPages }
 										ref={ this.setListRef }
 										rowRenderer={ this.cellRendererWrapper }
-										rowHeight={ getPostRowHeight( {
-											posts: this.props.posts,
-											openShares: this.props.openShares,
-										} ) }
+										rowHeight={ this.getPostRowHeight }
 										rowCount={ size( this.props.posts ) } />
 								) }
 							</AutoSizer>

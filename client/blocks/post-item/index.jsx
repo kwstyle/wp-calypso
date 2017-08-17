@@ -2,9 +2,11 @@
  * External dependencies
  */
 import React, { PropTypes } from 'react';
+import { findDOMNode } from 'react-dom';
 import classnames from 'classnames';
 import { connect } from 'react-redux';
 import { localize } from 'i18n-calypso';
+import { noop } from 'lodash';
 
 /**
  * Internal dependencies
@@ -21,6 +23,44 @@ import PostActionsEllipsisMenu from 'my-sites/post-type-list/post-actions-ellips
 import PostTypePostAuthor from 'my-sites/post-type-list/post-type-post-author';
 
 class PostItem extends React.Component {
+
+	static defaultProps = {
+		onHeightChange: noop,
+	};
+
+	constructor() {
+		super( ...arguments );
+
+		this.handleHeightChange = this.handleHeightChange.bind( this );
+
+		this.state = {
+			nodeHeight: 0,
+		};
+	}
+
+	handleHeightChange() {
+		if ( window ) {
+			setTimeout( () => {
+				window.requestAnimationFrame( () => {
+					const domNode = findDOMNode( this );
+					const nodeHeight = domNode && domNode.clientHeight;
+
+					if ( nodeHeight && nodeHeight !== this.state.nodeHeight ) {
+						this.setState( { nodeHeight } );
+						this.props.onHeightChange( { nodeHeight, globalId: this.props.globalId } );
+					}
+				} );
+			}, 100 );
+		}
+	}
+
+	componentDidMount() {
+		this.handleHeightChange();
+	}
+
+	componentDidUpdate() {
+		this.handleHeightChange();
+	}
 
 	render() {
 		const title = this.props.post ? this.props.post.title : null;
@@ -68,7 +108,8 @@ PostItem.propTypes = {
 	globalId: PropTypes.string,
 	post: PropTypes.object,
 	className: PropTypes.string,
-	compact: PropTypes.bool
+	compact: PropTypes.bool,
+	onHeightChange: PropTypes.func,
 };
 
 export default connect( ( state, { globalId } ) => {
