@@ -170,12 +170,12 @@ const defaultOptions = {
  * @param {Function} onSuccess called if the action meta includes response data
  * @param {Function} onError called if the action meta includes error data
  * @param {Object} options configures additional dispatching behaviors
- * @param {Function} options.middleware runs before the dispatch itself
- * @param {Function} options.onProgress called on progress events when uploading
+ * @param {Function} [options.middleware] runs before the dispatch itself
+ * @param {Function} [options.onProgress] called on progress events when uploading
  * @returns {?*} please ignore return values, they are undefined
  */
-export const dispatchRequest = ( initiator, onSuccess, onError, options = defaultOptions ) => {
-	const { middleware, onProgress } = options;
+export const dispatchRequest = ( initiator, onSuccess, onError, options ) => {
+	const { middleware, onProgress } = Object.assign( defaultOptions, options );
 
 	// this is an odd way of injecting middleware
 	// normally we'd wrap the entire function from
