@@ -63,7 +63,7 @@ class PostItem extends React.Component {
 		this.handleHeightChange();
 	}
 
-	hideSharePanel = () => {
+	hideCurrentSharePanel = () => {
 		this.props.hideSharePanel( this.props.globalId );
 	}
 
@@ -74,8 +74,7 @@ class PostItem extends React.Component {
 			globalId,
 			compact,
 			editUrl,
-			isSharePanelOpen,
-			hideSharePanel,
+			isCurrentSharePanelOpen,
 			translate,
 		} = this.props;
 
@@ -108,12 +107,12 @@ class PostItem extends React.Component {
 					<PostTypeListPostThumbnail globalId={ globalId } />
 					<PostActionsEllipsisMenu globalId={ globalId } />
 				</Card>
-				{ post && isSharePanelOpen && (
+				{ post && isCurrentSharePanelOpen && (
 					<PostShare
 						post={ post }
 						siteId={ siteId }
 						showClose={ true }
-						onClose={ this.hideSharePanel }
+						onClose={ this.hideCurrentSharePanel }
 					/>
 				) }
 			</div>
@@ -128,6 +127,8 @@ PostItem.propTypes = {
 	className: PropTypes.string,
 	compact: PropTypes.bool,
 	onHeightChange: PropTypes.func,
+	isCurrentSharePanelOpen: PropTypes.bool,
+	hideSharePanel: PropTypes.func,
 };
 
 export default connect( ( state, { globalId } ) => {
@@ -139,7 +140,7 @@ export default connect( ( state, { globalId } ) => {
 	return {
 		post,
 		editUrl: getEditorPath( state, post.site_ID, post.ID ),
-		isSharePanelOpen: isSharePanelOpen( state, globalId ),
+		isCurrentSharePanelOpen: isSharePanelOpen( state, globalId ),
 	};
 }, {
 	hideSharePanel,
