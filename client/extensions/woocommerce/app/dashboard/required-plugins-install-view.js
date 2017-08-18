@@ -82,7 +82,7 @@ class RequiredPluginsInstallView extends Component {
 	}
 
 	doInitialization = () => {
-		const { site, sitePlugins, translate, wporg } = this.props;
+		const { site, sitePlugins, wporg } = this.props;
 
 		if ( ! site ) {
 			return;
@@ -99,7 +99,7 @@ class RequiredPluginsInstallView extends Component {
 
 		if ( waitingForPluginListFromSite ) {
 			this.setState( {
-				message: translate( 'Waiting for plugin list from site' ),
+				message: '',
 				progress: 0,
 			} );
 			return;
@@ -124,7 +124,7 @@ class RequiredPluginsInstallView extends Component {
 		}
 		if ( ! pluginDataLoaded ) {
 			this.setState( {
-				message: translate( 'Loading plugin data' ),
+				message: '',
 				progress: 0,
 			} );
 			return;
@@ -170,8 +170,7 @@ class RequiredPluginsInstallView extends Component {
 	}
 
 	doInstallation = () => {
-		const { site, sitePlugins, translate, wporg } = this.props;
-		const requiredPlugins = this.getRequiredPluginsList();
+		const { site, sitePlugins, wporg } = this.props;
 
 		// If we are working on nothing presently, get the next thing to install and install it
 		if ( 0 === this.state.workingOn.length ) {
@@ -201,7 +200,7 @@ class RequiredPluginsInstallView extends Component {
 			}
 
 			this.setState( {
-				message: translate( 'Installing %(plugin)s', { args: { plugin: requiredPlugins[ workingOn ] } } ),
+				message: '',
 				toInstall,
 				workingOn,
 			} );
@@ -218,8 +217,7 @@ class RequiredPluginsInstallView extends Component {
 	}
 
 	doActivation = () => {
-		const { site, sitePlugins, translate } = this.props;
-		const requiredPlugins = this.getRequiredPluginsList();
+		const { site, sitePlugins } = this.props;
 
 		// If we are working on nothing presently, get the next thing to activate and activate it
 		if ( 0 === this.state.workingOn.length ) {
@@ -254,7 +252,7 @@ class RequiredPluginsInstallView extends Component {
 			this.props.activatePlugin( site.ID, pluginToActivate );
 
 			this.setState( {
-				message: translate( 'Activating %(plugin)s', { args: { plugin: requiredPlugins[ workingOn ] } } ),
+				message: '',
 				toActivate,
 				workingOn,
 			} );
@@ -271,12 +269,12 @@ class RequiredPluginsInstallView extends Component {
 	}
 
 	doneSuccess = () => {
-		const { site, translate } = this.props;
+		const { site } = this.props;
 		this.props.setFinishedInstallOfRequiredPlugins( site.ID, true );
 
 		this.setState( {
 			engineState: 'IDLE',
-			message: translate( 'All required plugins are installed and activated' ),
+			message: '',
 			progress: 100,
 		} );
 	}
