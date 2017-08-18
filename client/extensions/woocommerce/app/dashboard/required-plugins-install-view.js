@@ -35,7 +35,6 @@ class RequiredPluginsInstallView extends Component {
 		super( props );
 		this.state = {
 			engineState: 'CONFIRMING',
-			message: '',
 			progress: 0,
 			toActivate: [],
 			toInstall: [],
@@ -99,7 +98,6 @@ class RequiredPluginsInstallView extends Component {
 
 		if ( waitingForPluginListFromSite ) {
 			this.setState( {
-				message: '',
 				progress: 0,
 			} );
 			return;
@@ -124,7 +122,6 @@ class RequiredPluginsInstallView extends Component {
 		}
 		if ( ! pluginDataLoaded ) {
 			this.setState( {
-				message: '',
 				progress: 0,
 			} );
 			return;
@@ -145,7 +142,6 @@ class RequiredPluginsInstallView extends Component {
 		if ( toInstall.length ) {
 			this.setState( {
 				engineState: 'INSTALLING',
-				message: '',
 				progress: 25,
 				toActivate,
 				toInstall,
@@ -156,7 +152,6 @@ class RequiredPluginsInstallView extends Component {
 		if ( toActivate.length ) {
 			this.setState( {
 				engineState: 'ACTIVATING',
-				message: '',
 				progress: 50,
 				toActivate,
 			} );
@@ -165,7 +160,6 @@ class RequiredPluginsInstallView extends Component {
 
 		this.setState( {
 			engineState: 'DONESUCCESS',
-			message: '',
 		} );
 	}
 
@@ -180,7 +174,6 @@ class RequiredPluginsInstallView extends Component {
 			if ( 0 === toInstall.length ) {
 				this.setState( {
 					engineState: 'ACTIVATING',
-					message: '',
 					progress: 50,
 				} );
 				return;
@@ -200,7 +193,6 @@ class RequiredPluginsInstallView extends Component {
 			}
 
 			this.setState( {
-				message: '',
 				toInstall,
 				workingOn,
 			} );
@@ -227,7 +219,6 @@ class RequiredPluginsInstallView extends Component {
 			if ( 0 === toActivate.length ) {
 				this.setState( {
 					engineState: 'DONESUCCESS',
-					message: '',
 					progress: 100,
 				} );
 				return;
@@ -252,7 +243,6 @@ class RequiredPluginsInstallView extends Component {
 			this.props.activatePlugin( site.ID, pluginToActivate );
 
 			this.setState( {
-				message: '',
 				toActivate,
 				workingOn,
 			} );
@@ -274,7 +264,6 @@ class RequiredPluginsInstallView extends Component {
 
 		this.setState( {
 			engineState: 'IDLE',
-			message: '',
 			progress: 100,
 		} );
 	}
@@ -373,9 +362,6 @@ class RequiredPluginsInstallView extends Component {
 					subtitle={ translate( 'Give us a minute and we\'ll move right along.' ) }
 				>
 					<ProgressBar value={ progress } isPulsing />
-					<p>
-						{ this.state.message }
-					</p>
 				</SetupHeader>
 			</div>
 		);
