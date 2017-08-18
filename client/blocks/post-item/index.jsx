@@ -39,19 +39,17 @@ class PostItem extends React.Component {
 		};
 	}
 
-	handleHeightChange() {
-		if ( window ) {
-			setTimeout( () => {
-				window.requestAnimationFrame( () => {
-					const domNode = findDOMNode( this );
-					const nodeHeight = domNode && domNode.clientHeight;
+	componentDidUpdate() {
+		this.handleHeightChange();
+	}
 
-					if ( nodeHeight && nodeHeight !== this.state.nodeHeight ) {
-						this.setState( { nodeHeight } );
-						this.props.onHeightChange( { nodeHeight, globalId: this.props.globalId } );
-					}
-				} );
-			}, 100 );
+	handleHeightChange() {
+		const domNode = findDOMNode( this );
+		const nodeHeight = domNode && domNode.clientHeight;
+
+		if ( nodeHeight && nodeHeight !== this.state.nodeHeight ) {
+			this.setState( { nodeHeight } );
+			this.props.onHeightChange( { nodeHeight, globalId: this.props.globalId } );
 		}
 	}
 
