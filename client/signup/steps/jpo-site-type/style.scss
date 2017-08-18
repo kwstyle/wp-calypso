@@ -262,3 +262,11 @@ p.jpo-site-type__description {
 		}
 	}
 }
+
+.jpo-site-type__image {
+	display: none;
+
+	@include breakpoint( ">480px" ) {
+		display: block;
+	}
+}
