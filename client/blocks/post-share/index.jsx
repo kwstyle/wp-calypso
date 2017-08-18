@@ -79,6 +79,7 @@ class PostShare extends Component {
 		post: PropTypes.object,
 		siteId: PropTypes.number,
 		disabled: PropTypes.bool,
+		showClose: PropTypes.bool,
 
 		// connect prps
 		connections: PropTypes.array,
@@ -143,6 +144,10 @@ class PostShare extends Component {
 
 	activeConnections() {
 		return this.props.connections.filter( this.isConnectionActive );
+	}
+
+	onClose = () => {
+		console.log( 'PostShare: close me!' );
 	}
 
 	toggleSharingPreview = () => {
@@ -543,6 +548,7 @@ class PostShare extends Component {
 			siteId,
 			siteSlug,
 			translate,
+			showClose,
 		} = this.props;
 
 		if ( ! siteId || ! postId ) {
@@ -577,6 +583,17 @@ class PostShare extends Component {
 							) }
 						</div>
 					</div>
+					{ showClose && (
+						<Button
+							borderless
+							aria-label={ translate( 'Close post sharing' ) }
+							className="post-share__close"
+							data-tip-target="post-share__close"
+							onClick={ this.onClose }
+						>
+							<Gridicon icon="cross" />
+						</Button>
+					) }
 					{ this.renderRequestSharingNotice() }
 					{ this.renderConnectionsWarning() }
 					{ this.renderPrimarySection() }

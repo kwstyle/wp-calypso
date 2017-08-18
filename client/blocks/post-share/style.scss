@@ -9,6 +9,7 @@ $section-border: solid 1px transparentize( lighten( $gray, 20% ), .5 );
 	animation: appear .3s ease-in-out;
 	border-top: $section-border;
 	margin: 0;
+	position: relative;
 }
 
 .post-share__wrapper .notice {
@@ -54,6 +55,15 @@ $section-border: solid 1px transparentize( lighten( $gray, 20% ), .5 );
 
 	@include breakpoint( ">480px" ) {
 		padding: 0 24px;
+	}
+}
+
+.post-share__close {
+	position: absolute;
+	top: 0;
+	right: 0;
+	&.button.is-borderless { // for specificity
+		padding: 10px;
 	}
 }
 

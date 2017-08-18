@@ -96,6 +96,7 @@ class PostItem extends React.Component {
 					<PostShare
 						post={ this.props.post }
 						siteId={ this.props.post.site_ID }
+						showClose={ true }
 					/>
 				}
 			</div>
