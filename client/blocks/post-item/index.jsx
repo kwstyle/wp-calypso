@@ -14,6 +14,7 @@ import { noop } from 'lodash';
 import { getEditorPath } from 'state/ui/editor/selectors';
 import { getNormalizedPost } from 'state/posts/selectors';
 import { isSharePanelOpen } from 'state/ui/post-type-list/selectors';
+import { hideSharePanel } from 'state/ui/post-type-list/actions';
 import Card from 'components/card';
 import PostRelativeTime from 'blocks/post-relative-time';
 import PostStatus from 'blocks/post-status';
@@ -97,6 +98,7 @@ class PostItem extends React.Component {
 						post={ this.props.post }
 						siteId={ this.props.post.site_ID }
 						showClose={ true }
+						onClose={ () => this.props.hideSharePanel( this.props.globalId ) }
 					/>
 				}
 			</div>
@@ -124,4 +126,6 @@ export default connect( ( state, { globalId } ) => {
 		editUrl: getEditorPath( state, post.site_ID, post.ID ),
 		isSharePanelOpen: isSharePanelOpen( state, globalId ),
 	};
+}, {
+	hideSharePanel,
 } )( localize( PostItem ) );
