@@ -94,6 +94,38 @@ class ActivityLog extends Component {
 		window.scrollTo( 0, 0 );
 	}
 
+	getStartMoment() {
+		const { moment, timezone, gmtOffset, startDate } = this.props;
+
+		// Use current site time if no startDate is supplied
+		if ( ! startDate ) {
+			const applySiteOffset = this.getSiteOffsetFunc();
+			return applySiteOffset( moment(), true );
+		}
+
+		if ( timezone ) {
+			return moment.tz( startDate, timezone );
+		}
+		if ( null !== gmtOffset ) {
+			debug( 'os', startDate, gmtOffset );
+			const time = 'T00:00:00';
+			let offset = 'Z';
+			let pad = '';
+			let sign = '';
+
+			if ( 0 !== gmtOffset ) {
+				offset = `${ Math.abs( gmtOffset ) }`;
+				pad = 10 > Math.abs( gmtOffset ) ? '0' : '';
+				sign = 0 > gmtOffset ? '-' : '+';
+			}
+
+			const d = `${ startDate }${ time }${ sign }${ pad }${ offset }`;
+			debug( 'd', d );
+			return moment( d );
+		}
+		return moment.utc( startDate );
+	}
+
 	handlePeriodChange = ( { date, direction } ) => {
 		this.props.recordTracksEvent( 'calypso_activitylog_monthpicker_change', {
 			date: date.utc().toISOString(),
@@ -240,7 +272,8 @@ class ActivityLog extends Component {
 	}
 
 	renderLogs() {
-		const { isPressable, isRewindActive, logs, moment, translate, siteId, startDate } = this.props;
+		const { isPressable, isRewindActive, logs, moment, translate, siteId } = this.props;
+		const startMoment = this.getStartMoment();
 
 		if ( isNull( logs ) ) {
 			return (
@@ -260,7 +293,7 @@ class ActivityLog extends Component {
 			return (
 				<EmptyContent
 					title={ translate( 'No activity for %s', {
-						args: moment.utc( startDate ).format( 'MMMM YYYY' ),
+						args: startMoment.format( 'MMMM YYYY' ),
 					} ) }
 				/>
 			);
@@ -293,8 +326,9 @@ class ActivityLog extends Component {
 	}
 
 	renderMonthNavigation( position ) {
-		const { moment, slug, startDate } = this.props;
-		const startOfMonth = moment.utc( startDate ).startOf( 'month' );
+		const { slug } = this.props;
+		const startMoment = this.getStartMoment();
+		const startOfMonth = startMoment.startOf( 'month' );
 		const query = {
 			period: 'month',
 			date: startOfMonth.format( 'YYYY-MM-DD' ),
@@ -314,12 +348,13 @@ class ActivityLog extends Component {
 	}
 
 	render() {
-		const { isPressable, isRewindActive, moment, siteId, siteTitle, slug, startDate } = this.props;
+		const { isPressable, isRewindActive, siteId, siteTitle, slug } = this.props;
+		const startMoment = this.getStartMoment();
 		const { requestedRestoreTimestamp, showRestoreConfirmDialog } = this.state;
 		const applySiteOffset = this.getSiteOffsetFunc();
 
-		const queryStart = applySiteOffset( moment.utc( startDate ) ).startOf( 'month' ).valueOf();
-		const queryEnd = applySiteOffset( moment.utc( startDate ) ).endOf( 'month' ).valueOf();
+		const queryStart = startMoment.startOf( 'month' ).valueOf();
+		const queryEnd = startMoment.endOf( 'month' ).valueOf();
 
 		return (
 			<Main wideLayout>
