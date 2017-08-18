@@ -63,6 +63,10 @@ class PostItem extends React.Component {
 		this.handleHeightChange();
 	}
 
+	hideSharePanel = () => {
+		this.props.hideSharePanel( this.props.globalId );
+	}
+
 	render() {
 		const {
 			className,
@@ -109,7 +113,7 @@ class PostItem extends React.Component {
 						post={ post }
 						siteId={ siteId }
 						showClose={ true }
-						onClose={ () => hideSharePanel( globalId ) }
+						onClose={ this.hideSharePanel }
 					/>
 				) }
 			</div>
