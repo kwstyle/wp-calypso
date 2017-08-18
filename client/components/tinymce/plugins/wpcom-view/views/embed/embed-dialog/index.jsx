@@ -11,29 +11,27 @@ import Button from 'components/button';
 import FormTextInput from 'components/forms/form-text-input';
 import PostEditEmbedsStore from 'lib/embeds/store';
 
+// run linter over all files before final commit, b/c ignored some in earlier commits
+// add jsdoc to all functions
+// add readme to give high-level overview of what it is and how to use it
+// add unit tests
+
 class EmbedDialog extends Component {
 	static propTypes = {
 		isVisible: PropTypes.bool,
 		embedUrl: PropTypes.string,
-		//onClose: PropTypes.func,
+		onInsert: PropTypes.func.required,
 	};
 
 	static defaultProps = {
 		isVisible: false,
 		embedUrl: '',
-		//onClose: noop,
 	};
 
 	state = {
+		isVisible: this.props.isVisible,
 		embedUrl: this.props.embedUrl,
 		embedMarkup: PostEditEmbedsStore.get( this.props.embedUrl ),
-	};
-
-	onUpdateEmbed = ( event ) => {
-		console.log('on update');
-		// set to state. this.embedUrl ?
-		// update tinymce content w/ state.embedUrl & re-render the embed inside the tinymce component
-		this.props.onClose();
 	};
 
 	onChangeEmbedUrl = ( event ) => {
@@ -43,25 +41,37 @@ class EmbedDialog extends Component {
 		} );
 
 		// this is breaking. embedurl gets set correctly, but embedmarkup is an empty object
+		// maybe need to do something with oncomponentupdate ?
+
 		// re-reder preview - should happen automatically
 		// need to debounce or something so not every single second
+	};
+
+	onCancel = () => {
+		this.setState( { isVisible: false } );
+	};
+
+	onUpdate = () => {
+		this.props.onInsert( this.state.embedUrl );
+		this.setState( { isVisible: false } );
+
+		// if the url changes, the new embedview has a poster that is cropped instead of
 	};
 
 	render() {
 		return (
 			<Dialog
 				className="embed-dialog"
-				isVisible={ this.props.isVisible }
-				onClose={ this.props.onClose }
+				isVisible={ this.state.isVisible }
+				onClose={ this.onCancel }
 				buttons={ [
-					<Button onClick={ this.props.onClose }>
+					<Button onClick={ this.onCancel }>
 						Cancel
 					</Button>,
-					<Button primary onClick={ this.onUpdateEmbed }>
+					<Button primary onClick={ this.onUpdate }>
 						Update
 					</Button>
-				] }
-			>
+				] }>
 				<h3 className="embed-dialog__title">Embed URL</h3>
 
 				<FormTextInput
@@ -74,28 +84,19 @@ class EmbedDialog extends Component {
 				test videos
 					https://www.youtube.com/watch?v=R54QEvTyqO4
 					https://www.youtube.com/watch?v=ghrL82cc-ss
+					https://www.youtube.com/watch?v=JkOIhs2mHpc
 					get some others video platforms, and maybe some non-video ones too
 
 				explain why it's safe to use dangersouslysetinnerhtml here. but first verify that it actually is safe
 				need to check if embedmarkup.body exists before using it. is there a js equivalent to php's ?? coalecense operator?
-				 */}
+				*/}
 
 				{/*
 				solved problems below w/ PostEditEmbedStore?
 				better way to set the preview content other than dangerouslysetinnerhtml?
 
-				-------
-
-				which component to use to embed the url?
-					will it work with all supported embeds, in addition to youtube?
-					how does core do it? calypso probably has similar thing
-					<ResizableIframe src={ this.state.embedUrl } frameBorder="0" seamless width="100%" />
-
 				security issue above with src="user input", need to use wpcom oembed provider whitelist.
-					lib/embeds/list-store ?
-				also want iframe sandbox params etc?
-				also need to transform to canonical embeddable URL. youtube will block main url via x-frame-options, have to use `/embed/{id}` url
-				shouldn't all those issues be handled by whatever component embeds the url?
+					lib/embeds/list-store ? seems like it, but verify
 
 				localize strings and test
 				*/}

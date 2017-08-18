@@ -827,47 +827,26 @@ function wpview( editor ) {
 		}
 	});
 
-
-	function footemp(a) {
-		//console.log('a',a);
-		// what is this supposed to be?
-		// it's not getting called, but it's required to be here
-	}
-
 	// shoujld maybe go elsewhere?
 	editor.addCommand( 'embedEditLink', content => {
-		function renderModal( visibility = 'show' ) {
-			let node = editor.selection.getNode();    // not sure if retrieved this correctly
-		    const store = editor.getParam( 'redux_store' );    // not sure if retrieved this correctly
+		let node    = editor.selection.getNode()        // not sure if retrieved this correctly
+		const store = editor.getParam('redux_store')    // not sure if retrieved this correctly. is it even needed?
 
-		    //console.log('node',node);
-		    //console.log( 'store',store);
-
-			renderWithReduxStore(
-				React.createElement( EmbedDialog, {
-					// this works, but it's hiding it by default
-					// also creating infinite number instead of creating 1 and reusing
-					isVisible: true,
-					embedUrl: content,
-					footemp, //remove this, but need to replace w/ something else? orjust random piece of data copy/pasted?
-					onInsert( productData ) {   // rename
-						console.log( 'productdata',productData ); // this isn't firing
-
-						editor.execCommand( 'mceInsertContent', false, serialize( productData ) );
-						renderModal( 'hide' );
-					},
-					onClose() {
-						editor.focus();
-						renderModal( 'hide' );
-					},
-				} ),
-				node,
-				store,
-			);
-		}
-
-		renderModal();
-		return 'test';
+		renderWithReduxStore(
+			React.createElement( EmbedDialog, {
+				isVisible: true,
+				embedUrl: content,
+				onInsert( embedUrl ) {
+					editor.execCommand( 'mceInsertContent', false, embedUrl );
+				},
+			} ),
+			node,
+			store,
+		);
+		// creating infinite number instead of creating 1 and reusing
+			// that's what contact-form and simple-payments do, though?
+			// maybe assign the React.createLement statement to a variable, then pass it to renderwithreduxstore?
+			// verify es6 let scope, etc. prob just put it in parent so it's available to children?
 	} );
 
 	editor.addButton( 'wp_view_edit', {
