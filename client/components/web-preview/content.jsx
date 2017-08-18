@@ -4,7 +4,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import debugModule from 'debug';
 import { noop, isFunction } from 'lodash';
 import page from 'page';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -21,8 +20,6 @@ import { localize } from 'i18n-calypso';
 import SpinnerLine from 'components/spinner-line';
 import SeoPreviewPane from 'components/seo-preview-pane';
 import { recordTracksEvent } from 'state/analytics/actions';
-
-const debug = debugModule( 'calypso:web-preview' );
 
 export class WebPreviewContent extends Component {
 	previewId = uuid();
@@ -75,7 +72,6 @@ export class WebPreviewContent extends Component {
 		}
 		// If the previewMarkup is erased, remove the iframe contents
 		if ( ! this.props.previewMarkup && prevProps.previewMarkup ) {
-			debug( 'removing iframe contents' );
 			this.setIframeMarkup( '' );
 		}
 		// Focus preview when showing modal
@@ -95,7 +91,6 @@ export class WebPreviewContent extends Component {
 		if ( ! data || data.channel !== 'preview-' + this.previewId ) {
 			return;
 		}
-		debug( 'message from iframe', data );
 
 		switch ( data.type ) {
 			case 'link':
@@ -151,17 +146,14 @@ export class WebPreviewContent extends Component {
 	focusIfNeeded = () => {
 		// focus content unless we are running in closed modal or on empty page
 		if ( this.iframe.contentWindow && this.state.iframeUrl !== 'about:blank' ) {
-			debug( 'focusing iframe contents' );
 			this.iframe.contentWindow.focus();
 		}
 	}
 
 	setIframeMarkup( content ) {
 		if ( ! this.iframe ) {
-			debug( 'no iframe to update' );
 			return;
 		}
-		debug( 'adding markup to iframe', content.length );
 		this.iframe.contentDocument.open();
 		this.iframe.contentDocument.write( content );
 		this.iframe.contentDocument.close();
@@ -177,7 +169,6 @@ export class WebPreviewContent extends Component {
 			return;
 		}
 
-		debug( 'setIframeUrl', iframeUrl );
 		try {
 			const newUrl = iframeUrl === 'about:blank'
 				? iframeUrl
@@ -206,18 +197,13 @@ export class WebPreviewContent extends Component {
 
 	setLoaded = () => {
 		if ( this.state.loaded && ! this.state.isLoadingSubpage ) {
-			debug( 'already loaded' );
 			return;
 		}
 		if ( ! this.state.iframeUrl && ! this.props.previewMarkup ) {
-			debug( 'preview loaded, but nothing to show' );
 			return;
 		}
 		if ( this.props.previewMarkup ) {
-			debug( 'preview loaded with markup' );
 			this.props.onLoad( this.iframe.contentDocument );
-		} else {
-			debug( 'preview loaded for url:', this.state.iframeUrl );
 		}
 		this.setState( { loaded: true, isLoadingSubpage: false } );
 
