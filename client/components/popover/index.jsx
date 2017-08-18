@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import debugFactory from 'debug';
 import classNames from 'classnames';
 import clickOutside from 'click-outside';
-import uid from 'component-uid';
+import { v4 as uuid } from 'uuid';
 
 /**
  * Internal dependencies
@@ -361,7 +361,7 @@ class Popover extends Component {
 	}
 
 	setPopoverId( id ) {
-		this.id = id || `pop__${ uid( 16 ) }`;
+		this.id = id || `pop__${ uuid() }`;
 		__popovers.add( this.id );
 
 		this.debug( 'creating ...' );
