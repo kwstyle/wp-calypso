@@ -64,11 +64,24 @@ class PostItem extends React.Component {
 	}
 
 	render() {
-		const title = this.props.post ? this.props.post.title : null;
-		const classes = classnames( 'post-item', this.props.className, {
+		const {
+			className,
+			post,
+			globalId,
+			compact,
+			editUrl,
+			isSharePanelOpen,
+			hideSharePanel,
+			translate,
+		} = this.props;
+
+		const title = post ? post.title : null;
+		const siteId = post ? post.site_ID : null;
+
+		const classes = classnames( 'post-item', className, {
 			'is-untitled': ! title,
-			'is-mini': this.props.compact,
-			'is-placeholder': ! this.props.globalId
+			'is-mini': compact,
+			'is-placeholder': ! globalId
 		} );
 
 		return (
@@ -77,30 +90,28 @@ class PostItem extends React.Component {
 					<div className="post-item__detail">
 						<div className="post-item__title-meta">
 							<h1 className="post-item__title">
-								<a href={ this.props.editUrl } className="post-item__title-link">
-									{ title || this.props.translate( 'Untitled' ) }
+								<a href={ editUrl } className="post-item__title-link">
+									{ title || translate( 'Untitled' ) }
 								</a>
 							</h1>
 							<div className="post-item__meta">
-								<PostRelativeTime globalId={ this.props.globalId } />
-								<PostStatus globalId={ this.props.globalId } />
-								<PostTypePostAuthor globalId={ this.props.globalId } />
+								<PostRelativeTime globalId={ globalId } />
+								<PostStatus globalId={ globalId } />
+								<PostTypePostAuthor globalId={ globalId } />
 							</div>
 						</div>
 					</div>
-					<PostTypeListPostThumbnail globalId={ this.props.globalId } />
-					<PostActionsEllipsisMenu globalId={ this.props.globalId } />
+					<PostTypeListPostThumbnail globalId={ globalId } />
+					<PostActionsEllipsisMenu globalId={ globalId } />
 				</Card>
-				{
-					this.props.post &&
-					this.props.isSharePanelOpen &&
+				{ post && isSharePanelOpen && (
 					<PostShare
-						post={ this.props.post }
-						siteId={ this.props.post.site_ID }
+						post={ post }
+						siteId={ siteId }
 						showClose={ true }
-						onClose={ () => this.props.hideSharePanel( this.props.globalId ) }
+						onClose={ () => hideSharePanel( globalId ) }
 					/>
-				}
+				) }
 			</div>
 		);
 	}
