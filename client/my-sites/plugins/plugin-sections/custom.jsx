@@ -14,11 +14,10 @@ import SectionNav from 'components/section-nav';
 import { sanitizeSectionContent } from 'lib/plugins/utils';
 
 const PluginSectionsCustom = ( { plugin, translate } ) => {
-	if ( ! plugin.description.length ) {
+	const description = sanitizeSectionContent( plugin.description );
+	if ( ! description.length ) {
 		return null;
 	}
-
-	const description = sanitizeSectionContent( plugin.description );
 
 	return (
 		<div className="plugin-sections__custom plugin-sections">
