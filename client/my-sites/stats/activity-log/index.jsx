@@ -356,7 +356,7 @@ export default connect(
 
 			// FIXME: Testing only
 			isPressable: get( state.activityLog.rewindStatus, [ siteId, 'isPressable' ], null ),
-			timezone: getSiteTimezoneValue( state, siteId ),
+			timezone: null, //getSiteTimezoneValue( state, siteId ),
 			gmtOffset: getSiteGmtOffset( state, siteId ),
 		};
 	},
