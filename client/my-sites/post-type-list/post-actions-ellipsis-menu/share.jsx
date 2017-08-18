@@ -21,6 +21,7 @@ class PostActionsEllipsisMenuShare extends Component {
 		globalId: PropTypes.string,
 		translate: PropTypes.func.isRequired,
 		status: PropTypes.string,
+		onClick: PropTypes.func,
 	};
 
 	constructor() {
@@ -32,6 +33,7 @@ class PostActionsEllipsisMenuShare extends Component {
 	sharePost() {
 		mc.bumpStat( 'calypso_cpt_actions', 'share' );
 		this.props.toggleSharePanel( this.props.globalId );
+		this.props.onClick(); // hide ellipsis menu
 	}
 
 	render() {
