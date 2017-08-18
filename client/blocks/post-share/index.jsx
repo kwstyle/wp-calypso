@@ -541,6 +541,7 @@ class PostShare extends Component {
 
 		const {
 			hasRepublicizeFeature,
+			hasFetchedConnections,
 			postId,
 			siteId,
 			siteSlug,
@@ -553,11 +554,11 @@ class PostShare extends Component {
 			return null;
 		}
 
-		const classes = classNames(
-			'post-share__wrapper',
-			{ 'has-connections': this.hasConnections() },
-			{ 'has-republicize-scheduling-feature': hasRepublicizeFeature },
-		);
+		const classes = classNames( 'post-share__wrapper', {
+			'is-placeholder': ! this.hasFetchedConnections,
+			'has-connections': this.hasConnections(),
+			'has-republicize-scheduling-feature': hasRepublicizeFeature,
+		} );
 
 		return (
 			<div className="post-share">
@@ -591,6 +592,9 @@ class PostShare extends Component {
 						>
 							<Gridicon icon="cross" />
 						</Button>
+					) }
+					{ ! hasFetchedConnections && (
+						<div className="post-share__placeholder" />
 					) }
 					{ this.renderRequestSharingNotice() }
 					{ this.renderConnectionsWarning() }
