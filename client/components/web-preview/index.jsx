@@ -19,7 +19,7 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import WebPreviewContent from './content';
 
 export class WebPreview extends Component {
-	constructor( props ) {
+	constructor(props) {
 		super( props );
 
 		this._hasTouch = false;
